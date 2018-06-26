@@ -19,31 +19,31 @@ char num[10],name[10];
 
 class salary{
 public:
-	float set_salary(){
+	void set_salary(){
 	cout<<"请输入岗位工资";cin>>gg;
 	cout<<"请输入薪级工资";cin>>xg;
 	cout<<"请输入职务津贴";cin>>zj;
 	cout<<"请输入绩效工资";cin>>jg;
-	yf=gg+xg+zj+jg;
-	return yf;
 	}
 
-	float grsds(){//计算税
+	void grsds(){//计算税
 	//cout<<"应发工资"<<yf;
-
+		yf=gg+xg+zj+jg;
+		cout<<yf<<endl;
 	if(yf>3500){
 		s1=yf-3500;
+		cout<<s1<<endl;
 		if(s1<500){
 		shui=s1*(float)0.05;
 		}
 		if(s1>500||s1<2000){
-			shui=s1*0.1;
+			shui=s1*(float)0.1;
 		}
 		if(s1>2000||s1<5000){
 			shui=s1*(float)0.15;
 		}
 		if(s1>5000||s1<20000){
-			shui=s1*0.2;
+			shui=s1*(float)0.2;
 		}
 		if(s1>20000||s1<40000){
 			shui=s1*(float)0.25;
@@ -60,16 +60,13 @@ public:
 		if(s1>100000){
 			shui=s1*(float)0.45;
 		}
-		return shui;
+		
 	}
-	else{shui=0;return shui;}
+	else{shui=0;}
 	sf=yf-shui;
-	//cout<<"实发工资"<<sf;
-	return sf;
 	};
 
 	float gg,xg,zj,jg,yf,shui,sf,s1;
-	
 };
 
 class Worker_salary : public workers,public salary{
@@ -79,7 +76,8 @@ class Worker_salary : public workers,public salary{
         {
        set_workers();
        set_salary();
-  }
+	   grsds();
+  }		
 };
 
 class Tmanage
@@ -97,7 +95,7 @@ class Tmanage
 };
 
 int Tmanage::add(){
-ofstream ofile("D:\\gz.dat",ios::app);
+ofstream ofile("gz.dat",ios::app);
 if(!ofile){
 cout<<"文件不能打开"<<endl;
 return 0;
@@ -105,8 +103,8 @@ return 0;
 int n=1;
 while(n){
 	worker.set_work_salary();//输入职工信息
-	ofile<<worker.num<<"    "<<worker.name<<"    "<<worker.gg<<"    "<<worker.xg;
-	ofile<<"    "<<worker.zj<<"    "<<worker.jg<<"    "<<worker.yf<<"    "<<worker.shui<<"    "<<worker.sf;
+	ofile<<worker.num<<setw(10)<<worker.name<<setw(10)<<worker.gg<<setw(10)<<worker.xg;
+	ofile<<setw(10)<<worker.zj<<setw(10)<<worker.jg<<setw(10)<<worker.yf<<setw(10)<<worker.shui<<setw(10)<<worker.sf;
 	cout<<"输入成功"<<endl;
 	total++;
 	cout<<"继续输入请按1/退出请按0"<<endl;
@@ -117,7 +115,7 @@ return 0;
 }
 
 void Tmanage::print(){
-	ifstream ifile("D:\\gz.dat",ios::in);
+	ifstream ifile("gz.dat",ios::in);
 	if(!ifile){
 		cout<<"文件不能打开"<<endl;
 		abort();
@@ -127,12 +125,12 @@ void Tmanage::print(){
 	
 	while(getline(ifile,s)){
 		if(flag){
-			cout<<"    "<<"职工工号"<<"    "<<"职工姓名"<<"    "<<"岗位工资"<<"    "<<"薪级工资"
-			<<"    "<<"职务津贴"<<"    "<<"绩效工资"<<"    "<<"个人所得税"<<"    "
+			cout<<setw(10)<<"职工工号"<<setw(10)<<"职工姓名"<<setw(10)<<"岗位工资"<<setw(10)<<"薪级工资"
+			<<setw(10)<<"职务津贴"<<setw(10)<<"绩效工资"<<setw(10)<<"应发工资"<<setw(10)<<"个人所得税"<<setw(10)
 			<<"实发工资"<<endl;
 			cout<<s<<endl;//输出职工信息
 		}
-		//cout<<s<<endl;//输出职工信息
+		
 		flag=false;
 	}
 	if(flag){
@@ -142,22 +140,22 @@ void Tmanage::print(){
 
 void Tmanage::modify(){
 	Worker_salary worker[100];//存放读取到的记录
-	ifstream ifile("D:\\gz.dat",ios::in);
+	ifstream ifile("gz.dat",ios::in);
 	if(!ifile){
 		cout<<"不能打开文件"<<endl;
 		abort();
 	}
 	int i;
-	cout<<setw(1)<<"职工工号"<<setw(1)<<"职工姓名"<<setw(1)<<"岗位工资";
-	cout<<setw(1)<<"薪级工资"<<setw(1)<<"职务津贴"<<setw(1)<<"绩效工资";
-	cout<<setw(1)<<"个人所得税"<<setw(1)<<"实发工资"<<endl;
+	cout<<setw(10)<<"职工工号"<<setw(10)<<"职工姓名"<<setw(10)<<"岗位工资";
+	cout<<setw(10)<<"薪级工资"<<setw(10)<<"职务津贴"<<setw(10)<<"绩效工资";
+	cout<<setw(10)<<"应发工资"<<setw(10)<<"个人所得税"<<setw(10)<<"实发工资"<<endl;
 	for(i=0;i<total;i++){//提取文件内容
 		ifile>>worker[i].num>>worker[i].name>>worker[i].gg>>worker[i].xg>>worker[i].zj
-			>>worker[i].jg>>worker[i].shui>>worker[i].sf;
+			>>worker[i].jg>>worker[i].yf>>worker[i].shui>>worker[i].sf;
 	
 	}
 	ifile.close();
-	ofstream ofile("D:\\gz.dat",ios::out);
+	ofstream ofile("gz.dat",ios::out);
 	if(!ifile){
 		cout<<"文件不能打开"<<endl;
 		abort();
@@ -233,13 +231,13 @@ void Tmanage::modify(){
 											}//大for的括号
 								}//while(n)的括号
 	for(int j=0;j<total;j++){
-		ofile<<setw(1)<<worker[j].num<<setw(1)<<worker[j].name<<setw(1)<<worker[j].gg
-			<<setw(1)<<worker[j].xg<<setw(1)<<worker[j].zj<<setw(1)<<worker[j].jg<<endl;
+		ofile<<setw(10)<<worker[j].num<<setw(10)<<worker[j].name<<setw(10)<<worker[j].gg
+			<<setw(10)<<worker[j].xg<<setw(10)<<worker[j].zj<<setw(10)<<worker[j].jg<<worker[i].yf<<endl;
 		ofile.close();//关闭文件
 	}
 			};//modify的括号
 
-/*void Tmanage::del(){
+void Tmanage::del(){
 	Worker_salary worker[100];//存放读取到的记录
 	ifstream ifile("gz.dat",ios::in);
 	if(!ifile){
@@ -248,18 +246,18 @@ void Tmanage::modify(){
 	}
 	cout<<setw(10)<<"职工工号"<<setw(10)<<"职工姓名"<<setw(10)<<"岗位工资";
 	cout<<setw(10)<<"薪级工资"<<setw(10)<<"职务津贴"<<setw(10)<<"绩效工资";
-	cout<<setw(10)<<"个人所得税"<<setw(10)<<"实发工资"<<endl;
+	cout<<setw(10)<<"应发工资"<<setw(10)<<"个人所得税"<<setw(10)<<"实发工资"<<endl;
 	for(int i=0;i<total;i++){
 	ifile>>worker[i].num>>worker[i].name>>worker[i].gg>>worker[i].xg>>worker[i].zj
 			>>worker[i].jg>>worker[i].shui>>worker[i].sf;
 	cout<<setw(10)<<worker[i].num<<setw(10)<<worker[i].name<<setw(10)<<worker[i].gg
 		<<setw(10)<<worker[i].xg<<setw(10)<<worker[i].zj<<setw(10)<<worker[i].jg
-		<<setw(10)<<worker[i].shui<<setw(10)<<worker[i].sf<<endl;
+		<<setw(10)<<worker[i].yf<<setw(10)<<worker[i].shui<<setw(10)<<worker[i].sf<<endl;
 	}//提取文件内容并保存
 	ifile.close();
 	int n=1,q;
 	while(n){
-		ofstream ofile("gz.gat",ios::out);//可覆盖的形式
+		ofstream ofile("gz.dat",ios::out);//可覆盖的形式
 		if(!ofile){
 		cout<<"文件不能打开"<<endl;
 		abort();
@@ -273,10 +271,15 @@ void Tmanage::modify(){
 				if(strcmp(nn,worker[i].num)!=0){//不是所要删除的职工
 					ofile<<setw(10)<<worker[i].num<<setw(10)<<worker[i].name<<setw(10)<<worker[i].gg
 						<<setw(10)<<worker[i].xg<<setw(10)<<worker[i].zj<<setw(10)<<worker[i].jg
-						<<setw(10)<<worker[i].shui<<setw(10)<<worker[i].sf;
+						<<setw(10)<<worker[i].yf<<setw(10)<<worker[i].shui<<setw(10)<<worker[i].sf<<endl;
 
 				}//if的括号
+				if(strcmp(nn,worker[i].num)==0){
+					 flag=true;
+					 cout<<"*****删除成功*****"<<endl;
+					 q=i; //记录要删除的职工 
+				}
 			}//for语句的括号
 	}//while的括号
 }//del函数的括号
-			*/
+			
